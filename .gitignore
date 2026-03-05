@@ -1,0 +1,27 @@
+# OpenClaw Git 灾备排除文件
+# 基于 OpenClaw 极简安全实践指南 v2.7
+
+# 临时文件
+devices/*.tmp
+*.tmp
+*.bak*
+
+# 媒体文件（体积大）
+media/
+
+# 运行日志（可重建）
+logs/
+
+# shell 补全脚本（可重建）
+completions/
+
+# 静态资源（可重建）
+canvas/
+
+# 大型缓存
+cache/
+node_modules/
+
+# 敏感文件（本地独有）
+credentials/
+identity/
