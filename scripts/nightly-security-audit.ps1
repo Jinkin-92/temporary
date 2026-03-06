@@ -194,12 +194,16 @@ try {
     if (Test-Path "$workspacePath\.git") {
         Set-Location $workspacePath
         git add -A 2>$null
-        git commit -m "Nightly backup $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>$null
-        $pushResult = git push 2>&1
-        if ($LASTEXITCODE -eq 0) {
-            $report += "   [OK] Auto-pushed to GitHub private repo"
+        $commitResult = git commit -m "Nightly backup $(Get-Date -Format 'yyyy-MM-dd HH:mm')" 2>&1
+        if ($commitResult -notmatch "nothing to commit") {
+            $pushResult = git push --set-upstream origin master 2>&1
+            if ($LASTEXITCODE -eq 0 -or $pushResult -match "already up-to-date") {
+                $report += "   [OK] Auto-pushed to GitHub private repo"
+            } else {
+                $report += "   [WARN] Push failed"
+            }
         } else {
-            $report += "   [WARN] Push failed ($pushResult)"
+            $report += "   [OK] No changes to backup"
         }
     } else {
         $report += "   [INFO] Git backup not configured"
